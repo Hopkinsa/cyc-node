@@ -1,0 +1,36 @@
+{
+  "name": "cyc-node",
+  "version": "1.0.0",
+  "description": "NodeJS Cyclometric Complexity Reports",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon --config nodemon.json",
+    "style": "prettier 'src/**/*.{ts, json}' --write",
+    "lint": "npx eslint"
+  },
+  "author": "Andy Hopkins",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "@pythonidaer/complexity-report": "^1.0.18",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "nodemon": "^3.1.11",
+    "pug": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.2",
+    "@types/pug": "^2.0.10",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "typescript-eslint": "^8.50.0"
+  }
+}

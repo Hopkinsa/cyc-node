@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "module": "ESNext", // Use ESNext module system (ES modules)
+    "target": "ESNext", // Compile to the latest ECMAScript version
+    "moduleResolution": "node", // Resolve modules using Node.js style
+    "esModuleInterop": true, // Enables interop between ES modules and CommonJS
+    "allowSyntheticDefaultImports": true, // Allows default imports from modules with no default export
+    "strict": true, // Enables strict type-checking
+    "skipLibCheck": true, // Skip type-checking declaration files (faster builds)
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
+    "outDir": "./dist" // Specifies output directory for compiled files
+  },
+  "include": ["app/**/*.ts"], // Include all files under the app directory
+  "files": ["global.d.ts"],
+}

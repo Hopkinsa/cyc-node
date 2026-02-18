@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content=
+            "width=device-width, initial-scale=1.0")
+        title= Error - report.NAME + ' - Complexity Reports'
+        link(rel="stylesheet", href="/static/style.css")
+    body
+        H1 Complexity Reports
+
+        H2= report.NAME
+
+        p= 'There was an error generating this report'
+        p= 'See the console output for information'
+
+        p
+            a(href=linkBack) Back

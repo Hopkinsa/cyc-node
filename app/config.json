@@ -1,0 +1,10 @@
+{
+    "SERVER_PORT": 3000,
+    "REPORTS": [
+        {
+            "NAME": "CYC Node",
+            "PATH": "",
+            "FOLDER": "cyc_node"
+        }
+    ]
+}

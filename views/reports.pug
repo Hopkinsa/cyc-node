@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content=
+            "width=device-width, initial-scale=1.0")
+        title= report.NAME + ' - Complexity Reports'
+        link(rel="stylesheet", href="/static/style.css")
+    body
+        H1 Complexity Reports
+
+        H2= report.NAME
+
+        form(role='form' method='POST')
+            button(type="submit" class="button")= 'Generate report'
+
+        if folders.length > 0
+            H3 Reports
+            ul
+                each item in folders
+                    li
+                        a(href='/reporting/' + report.FOLDER + '/' + item, target='_blank')= item
+        else
+            p(class="empty")= 'No reports available'
+
+        p
+            a(href='/') Back
