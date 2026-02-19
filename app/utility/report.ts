@@ -33,7 +33,7 @@ class Report {
     const reportPath = `${BASE_PATH}/${report.FOLDER}`;
 
     const folders = await ComplexityReport.getFolders(report.FOLDER);
-    res.render('reports', { report, folders, reportPath });
+    res.render('reports', { report, folders, reportPath, idx });
   };
 
   static getCodebases = async (req: Request, res: Response): Promise<void> => {

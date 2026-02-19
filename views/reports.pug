@@ -19,7 +19,9 @@ html(lang="en")
             ul
                 each item in folders
                     li
-                        a(href='/reporting/' + report.FOLDER + '/' + item, target='_blank')= item
+                        = item
+                        a(href='/reporting/' + report.FOLDER + '/' + item, target='_blank', class="report-link")= 'Full'
+                        a(href='/reports/' + idx + '/' + item, target='_blank', class="report-link")= 'Summary'
         else
             p(class="empty")= 'No reports available'
 

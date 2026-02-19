@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, rmSync } from 'node:fs';
+import { copyFileSync, existsSync, readdirSync, rmSync } from 'node:fs';
 import { generateComplexityReport } from '@pythonidaer/complexity-report';
 import config from '../utility/config.ts';
 import { log } from './logger.ts';
@@ -55,6 +55,10 @@ class ComplexityReport {
           showAllInitially: true,
         });
 
+        if (existsSync(`${targetTempDir}`)) {
+          copyFileSync(`${targetTempDir}/complexity-report.json`, `${outputPath}complexity-report.json`)
+        }
+
         // A 'complexity' folder is created in the targetPath which is used for generating the report
         // This removes that folder UNLESS it already exists
         if (existsSync(`${targetTempDir}`) && !complexityExists) {
@@ -63,7 +67,9 @@ class ComplexityReport {
         }
         return true;
       }
-    } catch {}
+    } catch {
+      // ingnore error
+    }
 
     return false;
   };

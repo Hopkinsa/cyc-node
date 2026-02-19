@@ -52,23 +52,21 @@ a {
   text-decoration: none;
   color: #444;
 }
-
 a:hover {
   text-decoration: underline;
-  color: #00C;
+  color: #00c;
 }
 
 ul {
   margin: 1em 0;
   padding: 0 0 0 1em;
 }
-
 ul li {
   list-style-type: disc;
 }
 
 .button {
-  background-color: #00C;
+  background-color: #00c;
   border: none;
   color: white;
   padding: 0.5rem 1rem;
@@ -80,10 +78,35 @@ ul li {
   border-radius: 0.5rem;
 }
 .button:hover {
-    background-color: #008;
+  background-color: #008;
 }
 
 .empty {
-    margin: 1em 0;
-    font-weight: 700;
+  margin: 1em 0;
+  font-weight: 700;
+}
+
+.report-link {
+  margin-left: 2rem;
+}
+
+table {
+  width: 60%;
+  min-width: 760px;
+  border-collapse: collapse;
+}
+th,
+td {
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+}
+th + th,
+td + td {
+  text-align: right;
+}
+tr:nth-child(odd) {
+  background-color: #eee;
+}
+tr:first-child {
+  background-color: #ddd;
 }
