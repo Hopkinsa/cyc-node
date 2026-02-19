@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content=
+            "width=device-width, initial-scale=1.0")
+        title= report.NAME + ' - Complexity Report Summary'
+        link(rel="stylesheet", href="/static/style.css")
+    body
+        H1 Complexity Report Summary
+
+        H2= report.NAME
+
+        H3= target
+
+        if complexityObj.length > 0
+            table
+                th= 'File'
+                th= 'Issues'
+                th= 'Total Score'
+                each item in complexityObj
+                    tr
+                        td= item.file
+                        td= item.issues
+                        td= item.complexity
+
+        else
+            p(class="empty")= 'No summary available'
+
+        p
+            a(href='/reports/'+idx) Back
