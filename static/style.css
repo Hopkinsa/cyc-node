@@ -79,6 +79,8 @@ ul li {
 }
 .button:hover {
   background-color: #008;
+  color: white;
+  text-decoration: none;
 }
 
 .empty {
@@ -104,9 +106,20 @@ th + th,
 td + td {
   text-align: right;
 }
-tr:nth-child(odd) {
-  background-color: #eee;
+
+.open {
+    border: none;
 }
+
+tr {
+  border-bottom: 1px solid #CCC;
+}
+
 tr:first-child {
   background-color: #ddd;
+  border: none;
+}
+
+.tbl-center {
+  margin: .25rem auto;
 }
