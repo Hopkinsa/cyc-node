@@ -56,7 +56,7 @@ class ComplexityReport {
         });
 
         if (existsSync(`${targetTempDir}`)) {
-          copyFileSync(`${targetTempDir}/complexity-report.json`, `${outputPath}complexity-report.json`)
+          copyFileSync(`${targetTempDir}/reports/function-names.all.md`, `${outputPath}function-names.all.md`)
         }
 
         // A 'complexity' folder is created in the targetPath which is used for generating the report

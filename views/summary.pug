@@ -5,6 +5,7 @@ html(lang="en")
         meta(name="viewport", content=
             "width=device-width, initial-scale=1.0")
         title= report.NAME + ' - Complexity Report Summary'
+        script(src="/static/table.js")
         link(rel="stylesheet", href="/static/style.css")
     body
         H1 Complexity Report Summary
@@ -16,16 +17,27 @@ html(lang="en")
         if complexityObj.length > 0
             table
                 th= 'File'
-                th= 'Issues'
-                th= 'Total Score'
-                each item in complexityObj
-                    tr
+                th= 'File Complexity'
+                th
+                each item, index in complexityObj
+                    tr(id=index+'_file', onclick=`toggleRow('${index}')`)
                         td= item.file
-                        td= item.issues
                         td= item.complexity
-
+                        td(id=index+'_sign')= '+'
+                    if item.functions.length > 0
+                        tr(id=index+'_details', style="display: none;")
+                            td(colspan="3")
+                                table(class="tbl-center")
+                                    th= 'Function'
+                                    th= 'Line'
+                                    th= 'Function Complexity'
+                                    each itemFunction in item.functions
+                                        tr
+                                            td= itemFunction.name
+                                            td= itemFunction.line
+                                            td= itemFunction.complexity
         else
             p(class="empty")= 'No summary available'
 
         p
-            a(href='/reports/'+idx) Back
+            a(href='/reports/'+idx, class="button") Back
