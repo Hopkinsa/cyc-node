@@ -62,3 +62,4 @@ reporting/
 .DS_Store
 Thumbs.db
 
+app/config.json
