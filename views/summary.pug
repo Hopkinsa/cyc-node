@@ -18,11 +18,17 @@ html(lang="en")
             table
                 th= 'File'
                 th= 'File Complexity'
+                th= 'Total Functions'
+                th= 'Total Complexity'
+                th= 'Average Complexity'
                 th
                 each item, index in complexityObj
                     tr(id=index+'_file', onclick=`toggleRow('${index}')`)
                         td= item.file
                         td= item.complexity
+                        td= item.functionTotal
+                        td= item.complexityTotal
+                        td= item.complexityAverage.toFixed(2)
                         td(id=index+'_sign')= '+'
                     if item.functions.length > 0
                         tr(id=index+'_details', style="display: none;")
