@@ -24,6 +24,9 @@ type dataObject = {
   file: string;
   complexity: number;
   functions: functionObject[];
+  functionTotal: number;
+  complexityTotal: number,
+  complexityAverage: number;
 };
 
 class SummaryReport {
@@ -98,6 +101,7 @@ class SummaryReport {
     const data: dataObject[] = [];
     let file = '';
     let complexity = 0;
+    let complexityTotal = 0;
     let functionArray: functionObject[] = [];
 
     let used: string[] = [];
@@ -108,11 +112,15 @@ class SummaryReport {
           {
             file,
             complexity,
-            functions: functionArray
+            functions: functionArray,
+            functionTotal: functionArray.length,
+            complexityTotal: complexityTotal,
+            complexityAverage: (complexityTotal / functionArray.length),
           }
         ); }
         file = item.file;
         complexity = 0;
+        complexityTotal= 0;
         functionArray = [];
         used = [];
       }
@@ -122,6 +130,9 @@ class SummaryReport {
         complexity: item.complexity,
       };
       functionArray.push(functionItem);
+      complexityTotal += item.complexity;
+
+      // Filter out functions with the same name, as per original report
       if (!used.includes(item.name)) {
         complexity += item.complexity;
         used.push(item.name);
