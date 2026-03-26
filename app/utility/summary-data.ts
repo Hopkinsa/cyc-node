@@ -4,30 +4,24 @@ import { readFile } from 'node:fs/promises';
 import { createInterface } from 'node:readline';
 import config from './config.ts';
 import { jsonComplexity } from '../interface/eslint.interface.ts';
+import {
+  IFiles,
+  IFunctions,
+  IReports,
+} from '../interface/report-data.interface.ts';
+import {
+  dataObject,
+  functionComplexity,
+  functionObject,
+} from '../interface/summary.interface.ts';
+
+import DBUpdate from '../database/db-update/db-update.ts';
+
+import DBRead from '../database/db-read/db-read.ts';
 
 const REPORTS = config.REPORTS;
 const BASE_PATH = config.REPORT_BASE_PATH;
 const SUMMARY_START_LINE = 9;
-
-type functionComplexity = {
-  name: string;
-  complexity: number;
-  file: string;
-  line: number;
-};
-type functionObject = {
-  name: string;
-  line: number;
-  complexity: number;
-};
-type dataObject = {
-  file: string;
-  complexity: number;
-  functions: functionObject[];
-  functionTotal: number;
-  complexityTotal: number,
-  complexityAverage: number;
-};
 
 class SummaryReport {
   static dynamicSort = (properties: any) => {
@@ -108,19 +102,19 @@ class SummaryReport {
     functions.forEach((item) => {
       // reset on new file
       if (file !== item.file) {
-        if (file !== '') { data.push(
-          {
+        if (file !== '') {
+          data.push({
             file,
             complexity,
             functions: functionArray,
             functionTotal: functionArray.length,
             complexityTotal: complexityTotal,
-            complexityAverage: (complexityTotal / functionArray.length),
-          }
-        ); }
+            complexityAverage: complexityTotal / functionArray.length,
+          });
+        }
         file = item.file;
         complexity = 0;
-        complexityTotal= 0;
+        complexityTotal = 0;
         functionArray = [];
         used = [];
       }
@@ -141,15 +135,57 @@ class SummaryReport {
     return data;
   };
 
+  static createData = async (folder: string, target: string): Promise<void> => {
+      const loadedData = await SummaryReport.loadFunctionReport(
+        folder,
+        target
+      );
+
+      const tmpObj = await SummaryReport.processSummary(loadedData);
+      const tmpReportData: IReports = { report: target };
+      const tmpReportId = await DBUpdate.createReports(tmpReportData);
+
+      tmpObj.forEach(async (fileItem) => {
+        const fileData: IFiles = {
+          report_id: tmpReportId,
+          filename: fileItem.file,
+          fileComplexity: fileItem.complexity,
+          totalFunctions: fileItem.functionTotal,
+          totalComplexity: fileItem.complexityTotal,
+          averageComplexity: fileItem.complexityAverage,
+        };
+        const fileId = await DBUpdate.createFiles(fileData);
+
+        if (fileItem.functions.length > 0) {
+          fileItem.functions.forEach(async (functionItem) => {
+            const functiomData: IFunctions = {
+              report_id: tmpReportId,
+              summary_id: fileId,
+              function: functionItem.name,
+              line: functionItem.line,
+              functionComplexity: functionItem.complexity,
+            };
+            const functionId = await DBUpdate.createFunctions(functiomData);
+          });
+        }
+      });
+  }
+
   static getSummary = async (req: Request, res: Response): Promise<void> => {
     const idx: number = parseInt(req.params['idx'] as string);
     const target: string = req.params['tgt'] as string;
     const report = REPORTS[idx] as any;
-    const functionData = await SummaryReport.loadFunctionReport(
-      report.FOLDER,
-      target
-    );
-    const complexityObj = await SummaryReport.processSummary(functionData);
+    let reportId = await DBRead.reportExists(target);
+
+    if (reportId < 0) { // If data missing, create it
+      await SummaryReport.createData(report.FOLDER, target);
+
+      reportId = await DBRead.reportExists(target);
+    }
+
+    console.log(reportId);
+
+    const complexityObj = await DBRead.getReportById(reportId);
 
     res.render('summary', { report, target, idx, complexityObj });
   };

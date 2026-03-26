@@ -63,3 +63,4 @@ reporting/
 Thumbs.db
 
 app/config.json
+data/*.db

@@ -1,11 +1,16 @@
 import { Router } from 'express';
 import Report from '../utility/report.ts';
-import Summary from '../utility/summary.ts';
+import Summary from '../utility/summary-data.ts';
+
+import ComparisonReport from '../utility/compare-data.ts';
+
 
 export const REPORT_ROUTES = Router();
 
 // Request handling
 REPORT_ROUTES.get('/reports/:idx/:tgt', Summary.getSummary);
+
+REPORT_ROUTES.post('/reports/compare', ComparisonReport.getComparisonReport);
 
 REPORT_ROUTES.post('/reports/:idx', Report.generateReport);
 

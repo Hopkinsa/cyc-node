@@ -15,6 +15,24 @@ html(lang="en")
             button(type="submit" class="button")= 'Generate report'
 
         if folders.length > 0
+            if folders.length > 1
+                H3 Compare
+                form(role='form' method='POST' action="/reports/compare" target='_blank')
+                    select(name="tgt_1")
+                        option(value="")= 'Select report'
+                        each item in folders
+                            option(value=item)= item
+
+                    =' with '
+
+                    select(name="tgt_2")
+                        option(value="")= 'Select report'
+                        each item in folders
+                            option(value=item)= item
+                    br
+                    br
+                    button(type="submit" class="button")= 'Compare reports'
+
             H3 Reports
             ul
                 each item in folders
