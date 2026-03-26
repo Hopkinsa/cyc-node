@@ -123,3 +123,12 @@ tr:first-child {
 .tbl-center {
   margin: .25rem auto;
 }
+
+.deleted td {
+  color: #7e0000;
+  text-decoration: line-through;
+}
+
+.added td {
+  color: #00860b;
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content=
+            "width=device-width, initial-scale=1.0")
+        title= 'Complexity Report'
+        script(src="/static/table.js")
+        link(rel="stylesheet", href="/static/style.css")
+    body
+        H1 Comparison Report
+
+        H2= 'Compare ' + targetSort.tgt_1 + ' with ' + targetSort.tgt_2
+
+        if complexityObj.length > 0
+            table
+                th= 'File'
+                th= 'File Complexity'
+                th= 'Total Functions'
+                th= 'Total Complexity'
+                th= 'Average Complexity'
+                each item, index in complexityObj
+                    tr(id=index+'_file' class=item.status === 'D' ? 'deleted' : item.status === 'N' ? 'added' : '' )
+                        td= item.file
+                        if item.complexityChange !== 0
+                            td #{item.complexity} <br /> ( #{item.complexityChange} )
+                        else
+                            td= item.complexity
+
+                        if item.functionTotalChange !== 0
+                            td #{item.functionTotal} <br /> ( #{item.functionTotalChange} )
+                        else
+                            td= item.functionTotal
+
+                        if item.complexityTotalChange !== 0
+                            td #{item.complexityTotal} <br /> ( #{item.complexityTotalChange} )
+                        else
+                            td= item.complexityTotal
+
+                        if item.complexityAverageChange !== 0
+                             td #{item.complexityAverage.toFixed(2)} <br /> ( #{item.complexityAverageChange.toFixed(2)} )
+                        else
+                            td= item.complexityAverage.toFixed(2)
+
+        else
+            p(class="empty")= 'No summary available'
+
+        p
+            a(href='/reports', class="button") Back
