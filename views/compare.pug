@@ -23,27 +23,25 @@ html(lang="en")
                     tr(id=index+'_file' class=item.status === 'D' ? 'deleted' : item.status === 'N' ? 'added' : '' )
                         td= item.file
                         if item.complexityChange !== 0
-                            td #{item.complexity} <br /> ( #{item.complexityChange} )
+                            td #{item.complexity} <br /> #[span(class=item.complexityChange < 0 ? 'lower' : 'higher')= '( ' + item.complexityChange + ' )']
                         else
                             td= item.complexity
 
                         if item.functionTotalChange !== 0
-                            td #{item.functionTotal} <br /> ( #{item.functionTotalChange} )
+                            td #{item.functionTotal} <br /> #[span(class=item.functionTotalChange < 0 ? 'lower' : 'higher')= '( ' + item.functionTotalChange + ' )']
                         else
                             td= item.functionTotal
 
                         if item.complexityTotalChange !== 0
-                            td #{item.complexityTotal} <br /> ( #{item.complexityTotalChange} )
+                            td #{item.complexityTotal} <br /> #[span(class=item.complexityTotalChange < 0 ? 'lower' : 'higher')= '( ' + item.complexityTotalChange + ' )']
                         else
                             td= item.complexityTotal
 
                         if item.complexityAverageChange !== 0
-                             td #{item.complexityAverage.toFixed(2)} <br /> ( #{item.complexityAverageChange.toFixed(2)} )
+                             td #{item.complexityAverage.toFixed(2)} <br /> #[span(class=item.complexityAverageChange < 0 ? 'lower' : 'higher')= '( ' + item.complexityAverageChange.toFixed(2) + ' )']
                         else
                             td= item.complexityAverage.toFixed(2)
 
         else
             p(class="empty")= 'No summary available'
 
-        p
-            a(href='/reports', class="button") Back

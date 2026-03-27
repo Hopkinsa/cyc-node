@@ -132,3 +132,13 @@ tr:first-child {
 .added td {
   color: #00860b;
 }
+
+.lower {
+  background-color: #00860b;
+  color: #fff;
+}
+
+.higher {
+  background-color: #7e0000;
+  color: #fff;
+}
