@@ -9,75 +9,127 @@ This is a simple tool for working with [@pythonidaer/complexity-report](https://
 In a command prompt, from the repository root, run
 
 ```bash
-$ npm install
+npm install
 ```
 
-The `config.json` file in the `/app` folder needs to be edited to contain the values to set up the application and configure the codebase(s) to report on.
+The `config.json` file in the `/app` folder controls which codebases appear in the UI and how reports are generated.
+
+The application supports two project modes:
+
+- single-folder projects
+- Nx monorepo projects
+
+## Configuration
+
+### Single-folder project
+
+Use this mode for a normal project where the project root itself is the analysis target.
 
 ```json
 {
-    "SERVER_PORT": 3000,
-    "REPORTS": [
-        {
-            "NAME": "",
-            "PATH": "",
-            "FOLDER": ""
-        }
-    ]
+  "SERVER_PORT": 3000,
+  "REPORTS": [
+    {
+      "NAME": "My Project",
+      "PATH": "/absolute/path/to/project-root",
+      "FOLDER": "my-project"
+    }
+  ]
 }
 ```
 
-- SERVER_PORT: The port number to start the server on.
-- REPORTS: Array of codebases.
-  - NAME: Name of the codebase to display on screen.
-  - PATH: The full path to the codebase to report on folder.
-  - FOLDER: The folder name to use in /reporting to store the codebase reports in
+- `SERVER_PORT`: Port used by the web app.
+- `REPORTS`: Array of report targets.
+- `NAME`: Label shown in the UI.
+- `PATH`: Absolute path to the project root that will be analyzed.
+- `FOLDER`: Folder name used under `reporting/` for generated reports.
+
+### Nx monorepo project
+
+Use this mode when the code to analyze lives inside an Nx workspace and you want the report to be scoped to one app, its same-scope libraries, and only the `libs/shared` code that is actually required.
+
+```json
+{
+  "SERVER_PORT": 3000,
+  "REPORTS": [
+    {
+      "NAME": "My Project",
+      "PATH": "/absolute/path/to/project-root",
+      "FOLDER": "my-project"
+      "MODE": "nx",
+      "PROJECT": "myproject",
+      "APP_ROOT": "apps/myproject",
+      "LIB_SCOPE": "myproject"
+    }
+  ]
+}
+```
+
+Additional Nx fields:
+
+- `MODE`: Must be `nx`.
+- `PROJECT`: Nx project name.
+- `APP_ROOT`: App folder relative to the Nx workspace root.
+- `LIB_SCOPE`: Library scope to include, normally matching the app name.
+
+
+## How Nx Mode Works
+
+For Nx targets, the application does not run the complexity report against the full monorepo root.
+
+Instead it:
+
+1. creates a temporary copied workspace slice under `test-results/complexity-slices/`
+2. copies the selected app root
+3. copies all libraries under `libs/<scope>`
+4. discovers and copies only the required `libs/shared/**` library roots
+5. preloads the Nx project graph inside that copied slice
+6. runs the report in an isolated child Node process
+7. removes the temporary slice when the run completes
+
+This keeps the report scoped to the selected app while still allowing ESLint and Nx rules to resolve correctly.
 
 ## Prerequisites
 
-The codebase that is having a report generated on it MUST have a working eslint configuration and the necessary packages or files installed.  If any package or files referenced in the configuration file can not be found, an error will be thrown.
+### Single-folder projects
 
-The configuration file must be `eslint.config.js`, `eslint.config.mjs`, or `eslint.config.cjs` and available at the location entered in `REPORTS[].PATH`.  If a file can not be located, an error will be thrown.
+The project being analyzed must have:
 
-To test a single project from a NX Monorepo, you can copy just the project code to a separate testbed and install only the necessary eslint files and packages.
+- a working ESLint flat config
+- all packages and local files referenced by that config installed and available
+- one of `eslint.config.js`, `eslint.config.mjs`, or `eslint.config.cjs` at the configured `PATH`
 
-For example the following monorepo
+If any package or referenced file is missing, the report run will fail.
+
+### Nx projects
+
+The Nx workspace root configured in `PATH` must have:
+
+- `nx.json`
+- `package.json`
+- `tsconfig.base.json`
+- `tsconfig.eslint.json`
+- a root ESLint flat config
+- any shared config modules referenced by the ESLint setup
+
+The selected `APP_ROOT` must exist, and the selected `LIB_SCOPE` must map to libraries under `libs/<scope>`.
+
+You do not need to create a manual testbed copy for Nx workspaces anymore. The application now creates and removes the copied slice automatically.
+
+## Output And Storage
+
+Generated reports are stored under:
+
+```text
+reporting/<folder>/<folder>-<timestamp>/
 ```
-Root
-  apps
-    project_1
-    project_2
-    project_3
-    project_4
-  eslint-configs
-    common.rules.js
-    typescript.js
-  libs
-    libs_1
-    libs_2
-    libs_3
-    libs_4
-  tools
-  eslint.config.js
-  jest.cofig.js
-  nx.json
-  package.json
-  tsconfig.json
-```
-can be copied to
-```
-Testbed
-    test_folder
-      apps
-        project_3
-      eslint-configs
-        common.rules.js
-        typescript.js
-      eslint.config.js
-      package.json
-      tsconfig.json
-```
-IMPORTANT: remove any reference to NX from the eslint.config file and strip package.json of all dependencies not required by eslint, then run `npm i` in the test folder.
+
+Examples:
+
+- `reporting/my-project/my-project-20260415122357/`
+- `reporting/my-other-project/my-other-project-20260415122357/`
+
+The generated markdown is still ingested into the SQLite database used by the summary and comparison views.
 
 ## To run the reporter
 
@@ -91,4 +143,10 @@ Once the server is running, open your browser and navigate to `http://localhost:
 
 ## To generate a report
 
-When the server is running and the browser has opened `http://localhost:3000/`, navigate to the codebase you wish to generate a report on and click on the `Generate Report` button.
+When the server is running and the browser has opened `http://localhost:3000/`, navigate to the codebase you want to analyze and click `Generate Report`.
+
+For each configured target you can then:
+
+- open the full HTML report
+- open the summary view backed by SQLite
+- compare dated runs within the same report folder

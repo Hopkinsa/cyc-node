@@ -21,14 +21,14 @@ html(lang="en")
                     select(name="tgt_1")
                         option(value="")= 'Select report'
                         each item in folders
-                            option(value=item)= item
+                            option(value=item.name)= item.displayName
 
                     =' with '
 
                     select(name="tgt_2")
                         option(value="")= 'Select report'
                         each item in folders
-                            option(value=item)= item
+                            option(value=item.name)= item.displayName
                     br
                     br
                     button(type="submit" class="button")= 'Compare reports'
@@ -37,9 +37,9 @@ html(lang="en")
             ul
                 each item in folders
                     li
-                        = item
-                        a(href='/reporting/' + report.FOLDER + '/' + item, target='_blank', class="report-link")= 'Full'
-                        a(href='/reports/' + idx + '/' + item, target='_blank', class="report-link")= 'Summary'
+                        = item.displayName
+                        a(href='/reporting/' + report.FOLDER + '/' + item.name, target='_blank', class="report-link")= 'Full'
+                        a(href='/reports/' + idx + '/' + item.name, target='_blank', class="report-link")= 'Summary'
         else
             p(class="empty")= 'No reports available'
 

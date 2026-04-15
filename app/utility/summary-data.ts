@@ -183,8 +183,6 @@ class SummaryReport {
       reportId = await DBRead.reportExists(target);
     }
 
-    console.log(reportId);
-
     const complexityObj = await DBRead.getReportById(reportId);
 
     res.render('summary', { report, target, idx, complexityObj });

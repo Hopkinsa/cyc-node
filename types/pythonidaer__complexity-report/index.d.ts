@@ -1,0 +1,1 @@
+declare module '@pythonidaer/complexity-report';
