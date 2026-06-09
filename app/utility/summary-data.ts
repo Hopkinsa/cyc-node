@@ -14,6 +14,7 @@ import {
   functionComplexity,
   functionObject,
 } from '../interface/summary.interface.ts';
+import { formatFolderDisplayName } from './helpers.ts';
 
 import DBUpdate from '../database/db-update/db-update.ts';
 
@@ -185,7 +186,9 @@ class SummaryReport {
 
     const complexityObj = await DBRead.getReportById(reportId);
 
-    res.render('summary', { report, target, idx, complexityObj });
+    const targetName = formatFolderDisplayName(target);
+
+    res.render('summary', { report, target, targetName, idx, complexityObj });
   };
 }
 export default SummaryReport;

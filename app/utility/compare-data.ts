@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import config from './config.ts';
+import { formatFolderDisplayName } from './helpers.ts';
 
 import DBRead from '../database/db-read/db-read.ts';
 
@@ -31,16 +32,22 @@ class ComparisonReport {
       tgt_1: (targets.tgt_1 < targets.tgt_2) ? targets.tgt_1 : targets.tgt_2,
       tgt_2: (targets.tgt_1 > targets.tgt_2) ? targets.tgt_1 : targets.tgt_2,
     }
-    const reportId_1 = await DBRead.reportExists(targetSort.tgt_1);
-    const reportId_2 = await DBRead.reportExists(targetSort.tgt_2);
+    const targetNames: reportBody = {
+      tgt_1: formatFolderDisplayName(targetSort.tgt_1),
+      tgt_2: formatFolderDisplayName(targetSort.tgt_2),
+    }
+    const reportId1 = await DBRead.reportExists(targetSort.tgt_1);
+    const reportId2 = await DBRead.reportExists(targetSort.tgt_2);
 
-    if (reportId_1 < 0 || reportId_2 < 0) {
+    if (reportId1 < 0 || reportId2 < 0) {
       // Error
     }
 
-    const complexityObj = DBRead.processCompareData(await DBRead.compareReports(reportId_1, reportId_2));
+    const reportTarget = targetSort.tgt_1.split('-')[0].toUpperCase();
 
-    res.render('compare', { targetSort, complexityObj });
+    const complexityObj = DBRead.processCompareData(await DBRead.compareReports(reportId1, reportId2));
+
+    res.render('compare', { reportTarget, targetNames, complexityObj });
   };
 }
 export default ComparisonReport;
