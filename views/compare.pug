@@ -10,7 +10,9 @@ html(lang="en")
     body
         H1 Comparison Report
 
-        H2= 'Compare ' + targetSort.tgt_1 + ' with ' + targetSort.tgt_2
+        H2= reportTarget
+
+        H3= 'Compare ' + targetNames.tgt_1 + ' with ' + targetNames.tgt_2
 
         if complexityObj.length > 0
             table

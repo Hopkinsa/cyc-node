@@ -3,8 +3,8 @@ import { copyFileSync, existsSync, readdirSync, rmSync } from 'node:fs';
 import { promisify } from 'node:util';
 import config from '../utility/config.ts';
 import {
-  IReportConfig,
   INxReportConfig,
+  IReportConfig,
   isNxReportConfig,
 } from '../interface/config.interface.ts';
 import { log } from './logger.ts';

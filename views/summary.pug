@@ -12,7 +12,7 @@ html(lang="en")
 
         H2= report.NAME
 
-        H3= target
+        H3= targetName
 
         if complexityObj.length > 0
             table
@@ -20,7 +20,8 @@ html(lang="en")
                 th= 'File Complexity'
                 th= 'Total Functions'
                 th= 'Total Complexity'
-                th= 'Average Complexity'
+                th= 'Average Complexity (by file)'
+                th= 'Average Complexity (by function)'
                 th
                 each item, index in complexityObj
                     tr(id=index+'_file', onclick=`toggleRow('${index}')`)
@@ -28,6 +29,7 @@ html(lang="en")
                         td= item.complexity
                         td= item.functionTotal
                         td= item.complexityTotal
+                        td= (item.complexity / item.functionTotal).toFixed(2)
                         td= item.complexityAverage.toFixed(2)
                         td(id=index+'_sign')= '+'
                     if item.functions.length > 0

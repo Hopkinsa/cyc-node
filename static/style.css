@@ -1,7 +1,13 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: system-ui;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  font-size: 14px;
 }
 
 body {
@@ -13,14 +19,8 @@ body {
   color: #333;
 }
 
-html,
-body {
-  height: 100%;
-  font-size: 1em;
-}
-
 h1 {
-  font-size: 2em;
+  font-size: 1.75rem;
   font-weight: 700;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -28,7 +28,7 @@ h1 {
 }
 
 h2 {
-  font-size: 1.5em;
+  font-size: 1.25rem;
   font-weight: 700;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -36,7 +36,7 @@ h2 {
 }
 
 h3 {
-  font-size: 1.25em;
+  font-size: 1rem;
   font-weight: 700;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -58,11 +58,11 @@ a:hover {
 }
 
 ul {
-  margin: 1em 0;
-  padding: 0 0 0 1em;
+  margin: 1rem 0;
+  padding: 0 0 0 1rem;
 }
 ul li {
-  list-style-type: disc;
+  list-style-type: disc
 }
 
 .button {
@@ -73,7 +73,7 @@ ul li {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 1em;
+  font-size: 1rem;
   cursor: pointer;
   border-radius: 0.5rem;
 }
@@ -83,8 +83,14 @@ ul li {
   text-decoration: none;
 }
 
+@media print {
+  a.button {
+    display: none !important;
+  }
+}
+
 .empty {
-  margin: 1em 0;
+  margin: 1rem 0;
   font-weight: 700;
 }
 
@@ -93,7 +99,7 @@ ul li {
 }
 
 table {
-  width: 60%;
+  width: 90%;
   min-width: 760px;
   border-collapse: collapse;
 }
@@ -136,9 +142,13 @@ tr:first-child {
 .lower {
   background-color: #00860b;
   color: #fff;
+  font-size: 0.8rem;
+  padding: 3px;
 }
 
 .higher {
   background-color: #7e0000;
   color: #fff;
+  font-size: 0.8rem;
+  padding: 3px;
 }
