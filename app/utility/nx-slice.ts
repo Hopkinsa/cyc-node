@@ -1,12 +1,6 @@
 import { existsSync } from 'node:fs';
 import { execFile } from 'node:child_process';
-import {
-  cp,
-  mkdir,
-  readFile,
-  readdir,
-  rm,
-} from 'node:fs/promises';
+import { cp, mkdir, readdir, readFile, rm } from 'node:fs/promises';
 import * as path from 'node:path';
 import { promisify } from 'node:util';
 
@@ -88,7 +82,10 @@ class NxWorkspaceSlice {
     );
 
     await NxWorkspaceSlice.copyWorkspaceRootFiles(workspaceRoot, sliceRoot);
-    await NxWorkspaceSlice.copyDirectory(appRoot, path.join(sliceRoot, report.APP_ROOT));
+    await NxWorkspaceSlice.copyDirectory(
+      appRoot,
+      path.join(sliceRoot, report.APP_ROOT)
+    );
 
     if (existsSync(scopedLibRoot)) {
       await NxWorkspaceSlice.copyDirectory(
@@ -148,7 +145,10 @@ class NxWorkspaceSlice {
         continue;
       }
 
-      await NxWorkspaceSlice.copyFile(sourcePath, path.join(sliceRoot, filename));
+      await NxWorkspaceSlice.copyFile(
+        sourcePath,
+        path.join(sliceRoot, filename)
+      );
     }
 
     for (const filename of ESLINT_CONFIG_FILES) {
@@ -157,7 +157,10 @@ class NxWorkspaceSlice {
         continue;
       }
 
-      await NxWorkspaceSlice.copyFile(sourcePath, path.join(sliceRoot, filename));
+      await NxWorkspaceSlice.copyFile(
+        sourcePath,
+        path.join(sliceRoot, filename)
+      );
     }
 
     for (const directoryName of ROOT_DIRECTORIES) {
@@ -178,7 +181,8 @@ class NxWorkspaceSlice {
     appRoot: string,
     scopedLibRoot: string
   ): Promise<string[]> => {
-    const tsConfigPaths = await NxWorkspaceSlice.loadTsConfigPaths(workspaceRoot);
+    const tsConfigPaths =
+      await NxWorkspaceSlice.loadTsConfigPaths(workspaceRoot);
     const sharedAliasEntries = await NxWorkspaceSlice.buildSharedAliasEntries(
       workspaceRoot,
       tsConfigPaths
@@ -201,9 +205,8 @@ class NxWorkspaceSlice {
 
       scannedRoots.add(normalizedRoot);
 
-      const imports = await NxWorkspaceSlice.collectImportsFromDirectory(
-        normalizedRoot
-      );
+      const imports =
+        await NxWorkspaceSlice.collectImportsFromDirectory(normalizedRoot);
 
       for (const importPath of imports) {
         if (!importPath.startsWith('@libs/shared/')) {
@@ -229,19 +232,15 @@ class NxWorkspaceSlice {
 
   static preloadProjectGraph = async (sliceRoot: string): Promise<void> => {
     try {
-      await execFileAsync(
-        'npx',
-        ['nx', 'show', 'projects', '--json'],
-        {
-          cwd: sliceRoot,
-          env: {
-            ...process.env,
-            NX_DAEMON: 'false',
-          },
-          timeout: 120000,
-          maxBuffer: 10 * 1024 * 1024,
-        }
-      );
+      await execFileAsync('npx', ['nx', 'show', 'projects', '--json'], {
+        cwd: sliceRoot,
+        env: {
+          ...process.env,
+          NX_DAEMON: 'false',
+        },
+        timeout: 120000,
+        maxBuffer: 10 * 1024 * 1024,
+      });
 
       log.info_lv3(`${DEBUG}preloaded Nx project graph`, sliceRoot);
     } catch (error) {
@@ -255,7 +254,13 @@ class NxWorkspaceSlice {
   ): Promise<TsConfigPaths> => {
     const tsConfigBasePath = path.join(workspaceRoot, 'tsconfig.base.json');
     const configFile = await readFile(tsConfigBasePath, 'utf8');
-    const parsedConfig = JSON.parse(configFile) as {
+    // Normalize JSONC-like tsconfig content to strict JSON before parsing.
+    const strippedConfig = configFile
+      .replace(/\/\*[\s\S]*?\*\//g, '') // Remove multi-line comments
+      .replace(/\/\/.*$/gm, '') // Remove single-line comments
+      .replace(/,\s*([}\]])/g, '$1'); // Remove trailing commas before } or ]
+
+    const parsedConfig = JSON.parse(strippedConfig) as {
       compilerOptions?: { paths?: TsConfigPaths };
     };
 
@@ -291,7 +296,9 @@ class NxWorkspaceSlice {
       }
     }
 
-    return entries.sort((left, right) => right.alias.length - left.alias.length);
+    return entries.sort(
+      (left, right) => right.alias.length - left.alias.length
+    );
   };
 
   static findOwningProjectRoot = async (
@@ -303,7 +310,10 @@ class NxWorkspaceSlice {
     while (currentPath.startsWith(workspaceRoot)) {
       const projectJsonPath = path.join(currentPath, 'project.json');
       if (existsSync(projectJsonPath)) {
-        return NxWorkspaceSlice.toWorkspaceRelativePath(workspaceRoot, currentPath);
+        return NxWorkspaceSlice.toWorkspaceRelativePath(
+          workspaceRoot,
+          currentPath
+        );
       }
 
       const parentPath = path.dirname(currentPath);
@@ -319,23 +329,31 @@ class NxWorkspaceSlice {
   static toWorkspaceRelativePath = (
     workspaceRoot: string,
     targetPath: string
-  ): string => path.relative(workspaceRoot, targetPath).split(path.sep).join('/');
+  ): string =>
+    path.relative(workspaceRoot, targetPath).split(path.sep).join('/');
 
   static collectImportsFromDirectory = async (
     directoryPath: string
   ): Promise<Set<string>> => {
     const imports = new Set<string>();
-    const directoryEntries = await readdir(directoryPath, { withFileTypes: true });
+    const directoryEntries = await readdir(directoryPath, {
+      withFileTypes: true,
+    });
 
     for (const entry of directoryEntries) {
       const fullPath = path.join(directoryPath, entry.name);
 
       if (entry.isDirectory()) {
-        if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name === 'complexity') {
+        if (
+          entry.name === 'node_modules' ||
+          entry.name === 'dist' ||
+          entry.name === 'complexity'
+        ) {
           continue;
         }
 
-        const childImports = await NxWorkspaceSlice.collectImportsFromDirectory(fullPath);
+        const childImports =
+          await NxWorkspaceSlice.collectImportsFromDirectory(fullPath);
         childImports.forEach((importPath) => imports.add(importPath));
         continue;
       }
